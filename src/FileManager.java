@@ -46,7 +46,6 @@ public class FileManager {
                 }
                 
                 double balance = Double.parseDouble(balanceLine.trim());
-                System.out.println("balance: "+balance);
               
                 Customer customer = new Customer(name, pin);
                 bank.addCustomer(customer); 

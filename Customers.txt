@@ -1,7 +1,7 @@
 Customer #000
 Ben
 0000
-1424.5
+0.5
 
 Customer #000
 Tom

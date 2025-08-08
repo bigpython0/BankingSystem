@@ -2,16 +2,18 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) throws Exception {
+        javax.swing.SwingUtilities.invokeLater(GUI::new); //use EDT thread for GUI
+
         Scanner scanner = new Scanner(System.in);
         Bank Bank1 = new Bank("TargoBank",5);
         System.out.print("Welcome to ");
         Bank1.printBankName();
         FileManager.loadCustomersFromFile(Bank1);
         
-
-        //____________________________new customer logic_____________________________
+        //new customer method
         customerRegistration(scanner, Bank1);
-        //_____________________login_____________________
+
+        //login
         BankAccount currentCustomerAccount = null;
         if ((currentCustomerAccount = customerLogin(scanner, Bank1))!= null) {
             loggedInSession(currentCustomerAccount, Bank1, scanner);
