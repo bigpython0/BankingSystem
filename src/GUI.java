@@ -7,7 +7,6 @@ import javax.swing.JTextField;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -64,9 +63,17 @@ public class GUI implements ActionListener{
         JTextField mainField = new JTextField();
         mainField.setBounds(300,10,400, 240);
         secondPanel.add(mainField);
+        
+        JTextField usernameField = new JTextField();
+        usernameField.setBounds(30,80,100, 30);
+        secondPanel.add(usernameField);
+
+        JTextField passwordField = new JTextField();
+        passwordField.setBounds(30,150,100, 30);
+        secondPanel.add(passwordField);
 
         JButton back = new JButton("Back");
-        back.setBounds(710, 230, 60, 20);
+        back.setBounds(710, 230, 70, 20);
         back.setActionCommand("BACK_START");
         back.addActionListener(this);
         secondPanel.add(back);
