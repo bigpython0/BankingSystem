@@ -65,7 +65,7 @@ public class GUI implements ActionListener{
         mainField.setBounds(300,10,400, 240);
         secondPanel.add(mainField);
 
-        JButton back = new JButton("back");
+        JButton back = new JButton("Back");
         back.setBounds(710, 230, 60, 20);
         back.setActionCommand("BACK_START");
         back.addActionListener(this);
