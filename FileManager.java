@@ -4,6 +4,7 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.List;
 
 @SuppressWarnings("unused")
@@ -11,13 +12,13 @@ import java.util.List;
 public class FileManager {
 
     public static void saveCustomersToFile(Customer[] customers, Bank bank) {
-        try {BufferedWriter writer = new BufferedWriter(new FileWriter("Customers.txt"));
+        try {BufferedWriter writer = new BufferedWriter(new FileWriter("../Customers.txt"));
             for (Customer customer : customers) {
                 if (customer == null) {continue;}
                 writer.write("Customer #"+customer.getcustID());
                 writer.write("\n"+customer.getName());
                 writer.write("\n"+customer.getPin());
-                writer.write("\n" + Double.toString(customer.getAccount().getBalance()) + "\n\n");
+                writer.write("\n" + customer.getAccount().getBalance().toString() + "\n\n");
             }
             writer.close();
         
@@ -27,7 +28,7 @@ public class FileManager {
     }
 
 public static void loadCustomersFromFile(Bank bank) {
-    try (BufferedReader reader = new BufferedReader(new FileReader("Customers.txt"))) {
+    try (BufferedReader reader = new BufferedReader(new FileReader("../Customers.txt"))) {
         String line;
         int loaded = 0;
 
@@ -47,7 +48,7 @@ public static void loadCustomersFromFile(Bank bank) {
             pin  = pin.trim();
             if (name.isEmpty() || pin.isEmpty()) continue;
 
-            double loadedBalance = Double.parseDouble(balLine.trim());
+            BigDecimal loadedBalance = new BigDecimal(balLine.trim());
 
             Customer customer = new Customer(name, pin);
             customer.setCustID(custID);
@@ -55,8 +56,9 @@ public static void loadCustomersFromFile(Bank bank) {
 
             // Set exact balance on the account we just created
             BankAccount acc = customer.getAccount();
-            double delta = loadedBalance - acc.getBalance(); // acc likely starts at 0
-            if (delta != 0.0) acc.changeBalance(delta);
+            BigDecimal delta = loadedBalance.subtract(acc.getBalance()); // acc likely starts at 0
+            if (delta.compareTo(BigDecimal.ZERO) != 0)
+                acc.changeBalance(delta);
 
             loaded++;
         }
