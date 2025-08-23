@@ -1,50 +1,53 @@
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.util.Scanner;
 @SuppressWarnings("unused")
 
 
 public class BankAccount {
-    private double balance;
+    private BigDecimal balance;
     Scanner scanner = new Scanner(System.in);
 
-    public BankAccount(double balance) { //constructor
-        this.balance = balance;
+    public BankAccount(BigDecimal balance) { //constructor
+        this.balance = balance.setScale(2, RoundingMode.HALF_UP);
     }
 
     public void printBalance() {
         System.out.println("Your current balance is "+this.balance+".");
     }
 
-    public double getBalance() {
+    public BigDecimal getBalance() {
         return this.balance;
     }
 
-    public void changeBalance(double amount) {
-        this.balance = this.balance + amount; 
-        if (this.balance < 0) {
-            System.out.println("You are " +java.lang.Math.abs(this.balance)+"€ in depth.");
+    public void changeBalance(BigDecimal amount) {
+        BigDecimal newBalance = balance.add(amount).setScale(2, RoundingMode.HALF_UP); 
+        if (balance.compareTo(BigDecimal.ZERO) < 0) {
             return;
         }
+
+        balance = newBalance;
     }
 
-    public double deposit(double amount) {
+    public BigDecimal deposit(BigDecimal amount) {
         changeBalance(amount);
         return this.balance;
     }
 
-    public double withdraw(double amount) {
-        changeBalance(-amount);
-        return this.balance;
+    public BigDecimal withdraw(BigDecimal amount) {
+        changeBalance(amount.negate());
+        return balance.subtract(amount);
     }
 
-    public boolean sendMoney(Bank bank, double amount, String recipientName) {
+    public boolean sendMoney(Bank bank, BigDecimal amount, String recipientName) {
         //insufficient balance?
-        if(amount > this.balance) {
+        if(amount.compareTo(balance)>0) {
             return false;
         }
 
         if((bank.getCustomerAccountByName(recipientName))!= null) {
             bank.getCustomerAccountByName(recipientName).changeBalance(amount);
-            this.changeBalance(-amount); //set balance
+            this.changeBalance(amount.negate()); //set balance
             //System.out.println("Successfully sent "+amount+ " Euros.");
         }
 
