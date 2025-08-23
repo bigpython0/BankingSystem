@@ -5,6 +5,8 @@ public class Main { //bootsraper
     public static void main(String[] args) throws Exception {
         Bank bank = new Bank("TargoBank",5);
         BankService bankService = new BankService(bank);
+        
+        //debugging
         bankService.loadCustomers();
         bank.printCustomers();
         
