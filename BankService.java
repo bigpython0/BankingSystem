@@ -1,3 +1,5 @@
+import java.math.BigDecimal;
+
 public class BankService {
     private final Bank bank;
     
@@ -36,29 +38,25 @@ public class BankService {
      return customerToAdd;
    }
 
-   public double deposit(BankAccount account, double amount) {  
-     if (amount <= 0) {
+   public BigDecimal deposit(BankAccount account, BigDecimal amount) {  
+     if (amount.compareTo(new BigDecimal(0)) <= 0) {
           //throw error
           return account.getBalance();
      }
      return account.deposit(amount);
    }
 
-   public double withdraw(BankAccount account, double amount) {
-     if (amount > account.getBalance()) {
+   public BigDecimal withdraw(BankAccount account, BigDecimal amount) {
+     if (amount.compareTo(account.getBalance()) > 0) {
                //throw error
      } 
      return account.withdraw(amount); //account.withdraw returns updated balance
    }
 
-   public boolean transfer(BankAccount fromAccount, String toCustomerName, double amount) {
+   public boolean transfer(BankAccount fromAccount, String toCustomerName, BigDecimal amount) {
         if(fromAccount.sendMoney(bank, amount, toCustomerName)== false) {
             return false;
         }
         return true;
    }
-
-    
-
-       
-    }
+}
