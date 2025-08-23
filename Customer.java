@@ -1,3 +1,5 @@
+import java.math.BigDecimal;
+
 public class Customer {
         private int custID;
         String name;
@@ -12,7 +14,7 @@ public class Customer {
         this.name = name;
         //this.address = address;
         //this.phoneNum = phoneNum;
-        this.account = new BankAccount(0);
+        this.account = new BankAccount(new BigDecimal(0));
         this.pin = pin;
     }
     //___________________________print variables_________________________
