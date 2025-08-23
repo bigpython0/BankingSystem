@@ -2,14 +2,17 @@ import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 
 import java.awt.BorderLayout;
 import java.awt.CardLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.math.BigDecimal;
 
 public class GUI implements ActionListener{
     private CardLayout cardLayout;
@@ -23,8 +26,12 @@ public class GUI implements ActionListener{
     private String bankName = "Targobank"; //only centered for ts
     JTextField usernameField = new JTextField();
     JPasswordField passwordField = new JPasswordField();
+    JLabel submitErrorLabel = new JLabel();
+
+    JLabel balanceLabel = new JLabel("Balance: ");
 
     private BankService bankService;
+    private BankAccount currentAccount;
 
     public GUI(BankService bankservice) {
         this.bankService = bankservice;
@@ -35,12 +42,12 @@ public class GUI implements ActionListener{
 
     private void buildUI(){
 
-        //JFrame frame = new JFrame("Banking System"); //replaces setTitle
+               //JFrame frame = new JFrame("Banking System"); //replaces setTitle
         
         cardLayout = new CardLayout();
         cards = new JPanel(cardLayout);
 
-        //---start Panel---
+             //---start Panel---
         JPanel startPanel = new JPanel();
         startPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
         startPanel.setLayout(null);
@@ -52,18 +59,20 @@ public class GUI implements ActionListener{
         startPanel.add(button);
 
         JLabel welcomelabel1 = new JLabel("Welcome to");
+        welcomelabel1.setForeground(new Color(0, 83, 184));
         welcomelabel1.setFont(welcomelabel1.getFont().deriveFont(30f));
         welcomelabel1.setBounds(200, 10, 300 ,30);
         startPanel.add(welcomelabel1);
 
         JLabel welcomelabel2 = new JLabel(bankName);
+        welcomelabel2.setForeground(new Color(0, 22, 48));
         welcomelabel2.setFont(welcomelabel2.getFont().deriveFont(50f));
         welcomelabel2.setBounds(150, 35, 300 ,70);
         startPanel.add(welcomelabel2);
         
         cards.add(startPanel, CARD_START);
 
-        //--- login Panel---
+               //--- login Panel---
         JPanel loginPanel = new JPanel();
         loginPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
         loginPanel.setLayout(null);
@@ -78,13 +87,19 @@ public class GUI implements ActionListener{
         logInLabel.setFont(welcomelabel1.getFont().deriveFont(25f));
         loginPanel.add(logInLabel);
 
+        submitErrorLabel = new JLabel("");
+        submitErrorLabel.setForeground(Color.RED);
+        submitErrorLabel.setBounds(230, 170, 200, 30);
+        //will be changed later to text when any errors occur trying to login
+        loginPanel.add(submitErrorLabel);
+
         JLabel usernameLabel = new JLabel("Username: ");
         usernameLabel.setBounds(150, 85, 100, 30);
         usernameLabel.setFont(welcomelabel1.getFont().deriveFont(15f));
         loginPanel.add(usernameLabel);
 
         JLabel passwordLabel = new JLabel("Password: ");
-        passwordLabel.setBounds(150, 165, 100, 30);
+        passwordLabel.setBounds(150, 135, 100, 30);
         passwordLabel.setFont(passwordLabel.getFont().deriveFont(15f));
         loginPanel.add(passwordLabel);
 
@@ -92,8 +107,8 @@ public class GUI implements ActionListener{
         usernameField.setBounds(250,90,100, 30);
         loginPanel.add(usernameField);
 
-        //passwordField = new JPasswordField();
-        passwordField.setBounds(250,170,100, 30);
+             //passwordField = new JPasswordField();
+        passwordField.setBounds(250,140,100, 30);
         loginPanel.add(passwordField);
 
         JButton finishInput = new JButton("Submit");
@@ -102,21 +117,62 @@ public class GUI implements ActionListener{
         finishInput.addActionListener(this);
         loginPanel.add(finishInput);
 
+        //enter makes it submit
+        usernameField.addActionListener(_ -> finishInput.doClick());
+        passwordField.addActionListener(_ -> finishInput.doClick());
+
         JButton back = new JButton("Back");
-        back.setBounds(500, 10, 70, 20);
+        back.setBounds(500, 210, 70, 20);
         back.setActionCommand("BACK_START");
         back.addActionListener(this);
         loginPanel.add(back);
         cards.add(loginPanel, CARD_SECOND);
 
-        //---3rd panel---
+                //---3rd panel---
         JPanel manageAccountPanel = new JPanel();
         manageAccountPanel.setBorder(BorderFactory.createEmptyBorder(30, 30, 10, 30));
         manageAccountPanel.setLayout(null);
 
+        balanceLabel = new JLabel("Balance: ");
+        balanceLabel.setBounds(350, 10, 200, 30);
+        balanceLabel.setFont(balanceLabel.getFont().deriveFont(20f));
+        manageAccountPanel.add(balanceLabel);
+
+        JLabel bankLabel = new JLabel("TARGOBANK");
+        bankLabel.setBounds(10, 10, 200, 30);
+        bankLabel.setFont(bankLabel.getFont().deriveFont(30f));
+        manageAccountPanel.add(bankLabel);
+
+                     //------ BUTTONS -----------
+        JButton transferButton = new JButton("Transfer");
+        transferButton.addActionListener(this);
+        transferButton.setActionCommand("TRANSFER");
+        transferButton.setBounds(20,90,170,60);
+        manageAccountPanel.add(transferButton);
+
+        JButton depositButton = new JButton("Deposit");
+        depositButton.addActionListener(this);
+        depositButton.setActionCommand("DEPOSIT");
+        depositButton.setBounds(210,90,170,60);
+        manageAccountPanel.add(depositButton);
+
+        JButton withdrawButton = new JButton("Withdraw");
+        withdrawButton.addActionListener(this);
+        withdrawButton.setActionCommand("WITHDRAW");
+        withdrawButton.setBounds(400,90,170,60);
+        manageAccountPanel.add(withdrawButton);
+
+        JButton logOutButton = new JButton("Log out");
+        logOutButton.setBounds(470, 210, 100, 30);
+        logOutButton.setActionCommand("LOGOUT");
+        logOutButton.addActionListener(this);
+        manageAccountPanel.add(logOutButton);
+
+
+
         cards.add(manageAccountPanel, CARD_THIRD);
 
-        //--- add everything to frame---
+                //--- add everything to frame---
         frame.add(cards, BorderLayout.CENTER);
         cardLayout.show(cards, CARD_START);
 
@@ -142,6 +198,8 @@ public class GUI implements ActionListener{
 
             case "BACK_START" -> {
                 cardLayout.show(cards, CARD_START);
+                usernameField.setText("");
+                passwordField.setText("");
             }
 
             case "SUBMIT_LOGIN_INPUT" -> {
@@ -149,15 +207,90 @@ public class GUI implements ActionListener{
                 String pin = new String(passwordField.getPassword()).trim();
 
                 if (username.isEmpty() || pin.isEmpty()) {
-
+                    submitErrorLabel.setText("Can't leave empty text fields.");
                 }
-                BankAccount loginAccount = bankService.tryLogin(username, pin);
+
+                BankAccount loginAccount = null;
+                try {
+                    loginAccount = bankService.tryLogin(username, pin);
+                } catch (WrongPinException exc) {
+                    submitErrorLabel.setText(exc.getMessage());
+                }
+                
 
                 if(loginAccount != null) {
+                    usernameField.setText("");
+                    passwordField.setText("");
                     cardLayout.show(cards, CARD_THIRD);
+                    balanceLabel.setText("Balance: "+ loginAccount.getBalance() + "€");
+                    currentAccount = loginAccount;
                 } else {
-                    System.out.println("error during login");
+                    submitErrorLabel.setText("Wrong password or username.");;
                 }
+            }
+
+            case "TRANSFER" -> {
+
+            }
+
+            case "DEPOSIT" -> {
+                String input = JOptionPane.showInputDialog(frame, "Deposit amount:");
+                
+                if (input != null) {
+                    try {
+                        //validate decimal
+                        BigDecimal bd = new BigDecimal(input);
+                        
+                        if (bd.scale() > 2) {
+                            JOptionPane.showMessageDialog(frame, "More than two decimal numbers", "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        BigDecimal amount = new BigDecimal(input);
+
+                        if (amount.compareTo(new BigDecimal(0.1)) < 0) {
+                            JOptionPane.showMessageDialog(frame, "Input too small", "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        currentAccount.changeBalance(amount);
+                        balanceLabel.setText("Balance: "+String.format("%.2f",currentAccount.getBalance())+"€");
+                        amount = null;
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(frame, "Invalid input", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+
+            case "WITHDRAW" -> {
+                String input = JOptionPane.showInputDialog(frame, "Withdraw amount:");
+                if (input != null) {
+                    try {
+                        //validate decimal
+                        BigDecimal bd = new BigDecimal(input);
+                        if (bd.scale() > 2) {
+                            JOptionPane.showMessageDialog(frame, "More than two decimal numbers", "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        BigDecimal amount = new BigDecimal(input);
+
+                        if (amount.compareTo(currentAccount.getBalance()) > 0) {
+                            JOptionPane.showMessageDialog(frame, "Insufficient Balance", "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+                        currentAccount.changeBalance(amount.negate());
+                        balanceLabel.setText("Balance: "+String.format("%.2f",currentAccount.getBalance())+"€");
+                        amount = null;
+                    } catch (NumberFormatException ex) {
+                        JOptionPane.showMessageDialog(frame, "Invalid input", "Error", JOptionPane.ERROR_MESSAGE);
+                    }
+                }
+            }
+
+            case "LOGOUT" -> {
+                bankService.saveCustomers();
+                cardLayout.show(cards, CARD_SECOND);
+                currentAccount = null;
             }
         }
     }
