@@ -8,6 +8,10 @@ public class BankService {
         this.bank = bank;
     }
 
+    public BankAccount getBankAccountbyName(String name) {
+      return bank.getCustomerAccountByName(name);
+    }
+
     public BankAccount tryLogin(String username, String pin) {
      bank.printCustomers(); 
      Customer customer = bank.getCustomerByName(username);
