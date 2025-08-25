@@ -1,12 +1,12 @@
 To do list
-- clear up Main method
 - transaction info (date, transaction id) / history
-- visual interface
 - account id / iban
-- error output handling / defensive programming
-- multiple acounts per Customer (ion even know why, i think this stupid)
+
 
 done:
+- error output handling / defensive programming
+- clear up Main method
+- visual interface
 - remove User - logic 
 - User login (Password + ID)
 - User Input System
