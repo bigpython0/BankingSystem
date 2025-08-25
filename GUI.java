@@ -230,7 +230,39 @@ public class GUI implements ActionListener{
             }
 
             case "TRANSFER" -> {
+                String input = JOptionPane.showInputDialog(frame, "Customer name: ");
 
+                if (input != null) {
+                    BankAccount ba = bankService.getBankAccountbyName(input);
+
+                    if (ba == null) {
+                        JOptionPane.showMessageDialog(frame, "Couldnt find that Person.", "Error", JOptionPane.ERROR_MESSAGE);
+                    } else {
+                        BigDecimal amount = new BigDecimal(JOptionPane.showInputDialog(frame, "Transfer amount: "));
+
+                        if (amount.scale() > 2) {
+                            JOptionPane.showMessageDialog(frame, "More than two decimal numbers", "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
+
+                        if (amount.compareTo(BigDecimal.ZERO) < 0) {
+                            JOptionPane.showMessageDialog(frame,
+                            "Can't enter a negative number.", "Error", JOptionPane.ERROR_MESSAGE);
+                        }
+
+                        if (amount.compareTo(new BigDecimal(0.1)) < 0) {
+                            JOptionPane.showMessageDialog(frame,
+                            "Input too big, select smaller amount or deposit more money."
+                            , "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        } else {
+                            //amount is okay
+                            currentAccount.changeBalance(amount.negate());
+                            balanceLabel.setText("Balance: "+String.format("%.2f",currentAccount.getBalance())+"€");
+                            ba.changeBalance(amount);
+                        }
+                    }
+                }
             }
 
             case "DEPOSIT" -> {
