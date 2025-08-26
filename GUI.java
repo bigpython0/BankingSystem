@@ -238,21 +238,29 @@ public class GUI implements ActionListener{
                     if (ba == null) {
                         JOptionPane.showMessageDialog(frame, "Couldnt find that Person.", "Error", JOptionPane.ERROR_MESSAGE);
                     } else {
+                        // sending to own acc?
+                        if (ba.equals(currentAccount)) {
+                            JOptionPane.showMessageDialog(frame, "Can't send money to yourself.", "Error", JOptionPane.ERROR_MESSAGE);
+                            return;
+                        }
                         BigDecimal amount = new BigDecimal(JOptionPane.showInputDialog(frame, "Transfer amount: "));
 
+                        //right format? (decimals)
                         if (amount.scale() > 2) {
                             JOptionPane.showMessageDialog(frame, "More than two decimal numbers", "Error", JOptionPane.ERROR_MESSAGE);
                             return;
                         }
 
+                        //amount <0 ?
                         if (amount.compareTo(BigDecimal.ZERO) < 0) {
                             JOptionPane.showMessageDialog(frame,
                             "Can't enter a negative number.", "Error", JOptionPane.ERROR_MESSAGE);
                         }
 
-                        if (amount.compareTo(new BigDecimal(0.1)) < 0) {
+                        //
+                        if (amount.compareTo(new BigDecimal("0.01")) < 0) {
                             JOptionPane.showMessageDialog(frame,
-                            "Input too big, select smaller amount or deposit more money."
+                            "Input too small, select bigger amount"
                             , "Error", JOptionPane.ERROR_MESSAGE);
                             return;
                         } else {
@@ -280,7 +288,7 @@ public class GUI implements ActionListener{
 
                         BigDecimal amount = new BigDecimal(input);
 
-                        if (amount.compareTo(new BigDecimal(0.1)) < 0) {
+                        if (amount.compareTo(new BigDecimal(0.10)) < 0) {
                             JOptionPane.showMessageDialog(frame, "Input too small", "Error", JOptionPane.ERROR_MESSAGE);
                             return;
                         }
