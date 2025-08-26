@@ -12,6 +12,10 @@ public class BankService {
       return bank.getCustomerAccountByName(name);
     }
 
+    public Customer getCustomerByName(String name) {
+      return bank.getCustomerByName(name);
+    }
+
     public BankAccount tryLogin(String username, String pin) {
      bank.printCustomers(); 
      Customer customer = bank.getCustomerByName(username);
